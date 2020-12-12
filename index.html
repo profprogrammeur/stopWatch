@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ant_STOP</title>
+    <link rel="icon" type="image/png" href="favicon-32x32.png" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-main>
+                <v-container>Hello world</v-container>
+           
+
+
+        {{ title }}
+        <br>
+        <v-btn @click=""> STOP </v-btn>
+        <stopwatch></stopwatch>
+    
+
+</v-main>
+</v-app>
+</div>
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+
+    Vue.component('stopwatch', {
+        //props: ['title'], // no props for component. props are interface to outside world
+        data: function () {  /* with components data is function, because many instances allowed */
+            return {
+                state: "started",
+                startTime: Date.now(),
+                currentTime: Date.now(),
+                interval: null,
+                
+               
+            }
+        },
+        mounted: function () {
+            this.interval = setInterval(this.updateCurrentTime, 1000);
+           
+            
+        },
+        watch : {
+            seconds:function () {
+               
+             document.title = this.time;
+        }
+            },
+        destroyed: function () {
+            clearInterval(this.interval)
+        },
+        computed: {
+            time: function () {
+                return this.hours + ':' + this.minutes + ':' + this.seconds;
+                
+            },
+            milliseconds: function () {
+                return this.currentTime - this.$data.startTime;
+            },
+            hours: function () {
+                var lapsed = this.milliseconds;
+                var hrs = Math.floor((lapsed / 1000 / 60 / 60));
+                return hrs >= 10 ? hrs : '0' + hrs;
+            },
+            minutes: function () {
+                var lapsed = this.milliseconds;
+                var min = Math.floor((lapsed / 1000 / 60) % 60);
+                return min >= 10 ? min : '0' + min;
+            },
+            seconds: function () {
+                var lapsed = this.milliseconds;
+                var sec = Math.ceil((lapsed / 1000) % 60);
+                return sec >= 10 ? sec : '0' + sec;
+            }
+        },
+        methods: {
+            reset: function () {
+                this.$data.state = "started";
+                this.$data.startTime = Date.now();
+                this.$data.currentTime = Date.now();
+            },
+            pause: function () {
+                this.$data.state = "paused";
+            },
+            resume: function () {
+                this.$data.state = "started";
+            },
+            updateCurrentTime: function () {
+                if (this.$data.state == "started") {
+                    this.currentTime = Date.now();
+                }
+            }
+        },
+        template: `<div><span id="time" v-html="time">  </span>
+        <br>
+        
+        <v-card class="ml-5" max-width="400">
+            <v-row class="d-flex justify-center mb-6">
+                <v-btn elevation="9" x-large color="blue lighten-2" class="mt-5 mb-5 " v-html="time"> STOP </v-btn>
+            </v-row>
+            <v-row class="d-flex justify-center pb-4">
+                <v-btn color="red" class="mr-5" @click="pause"> STOP </v-btn>
+                <v-btn color="green" class="mr-5" @click="resume"> START </v-btn>
+                <v-btn color="primary" class="mr-5" @click="reset"> RESET </v-btn>
+            </v-row>
+        </v-card>
+        </div>
+        `
+        
+        
+        
+    });
+
+
+
+
+
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+             data: {             /* data is not function, there is only one instance of vue */
+                title: "Hi, look and behold this stopwatch component"
+            },
+            methods: {
+
+            }
+        })
+    </script>
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
